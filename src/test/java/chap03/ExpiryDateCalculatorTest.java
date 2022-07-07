@@ -14,27 +14,54 @@ import java.util.Date;
 */
 public class ExpiryDateCalculatorTest {
 
-    private void assertExpiryDate(LocalDate payDate, int payAmount, LocalDate expectedExpiryDate) {
+    private void assertExpiryDate(PayData payData, LocalDate expectedExpiryDate) {
         ExpiryDateCalculator cal = new ExpiryDateCalculator();
-        LocalDate realExpiryDate = cal.calculateExpiryDate(payDate, payAmount);
+        LocalDate realExpiryDate = cal.calculateExpiryDate(payData);
 
         assertEquals(expectedExpiryDate,realExpiryDate);
     }
 
     @Test
     void expiryDate_pay_10000won_then_one_month_later() {
-        assertExpiryDate(LocalDate.of(2022,7,1),10000,LocalDate.of(2022,8,1));
-        assertExpiryDate(LocalDate.of(1999,1,1),10000,LocalDate.of(1999,2,1));
+        assertExpiryDate(
+                PayData.builder()
+                        .payDate(LocalDate.of(2022,7,1))
+                        .payAmount(10_000)
+                        .build(),
+                LocalDate.of(2022,8,1)
+        );
+        assertExpiryDate(
+                PayData.builder()
+                        .payDate(LocalDate.of(1999,3,1))
+                        .payAmount(10_000)
+                        .build(),
+                LocalDate.of(1999,4,1)
+        );
     }
 
     @Test
-    void 납부일과_한달_뒤_일자가_같지_않음() {
-        assertExpiryDate(LocalDate.of(2022,1,31),10000,
-                LocalDate.of(2022,2,28));
-        assertExpiryDate(LocalDate.of(2022,5,31),10000,
-                LocalDate.of(2022,6,30));
-        assertExpiryDate(LocalDate.of(2020,1,31),10000,
-                LocalDate.of(2020,2,29));
+    void 납부일과_한달_뒤_일자가_같지_않음_만원_납부() {
+        assertExpiryDate(
+                PayData.builder()
+                        .payDate(LocalDate.of(2022,1,31))
+                        .payAmount(10_000)
+                        .build(),
+                LocalDate.of(2022,2,28)
+        );
+        assertExpiryDate(
+                PayData.builder()
+                        .payDate(LocalDate.of(2022,5,31))
+                        .payAmount(10_000)
+                        .build(),
+                LocalDate.of(2022,6,30)
+        );
+        assertExpiryDate(
+                PayData.builder()
+                        .payDate(LocalDate.of(2020,1,31))
+                        .payAmount(10_000)
+                        .build(),
+                LocalDate.of(2020,2,29)
+        );
     }
 
 
