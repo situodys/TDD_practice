@@ -8,11 +8,21 @@ public class ExpiryDateCalculator {
     public LocalDate calculateExpiryDate(PayData payData) {
 
         int addedMonths = payData.getPayAmount()/10_000;
+
+        if (addedMonths >= 10) {
+            return expiryDateOverTenThousandPay(payData, addedMonths);
+        }
         if (payData.getFirstPayDate() != null) {
             return expiryDateUsingFirstPayDate(payData, addedMonths);
         }else{
             return payData.getPayDate().plusMonths(addedMonths);
         }
+    }
+
+    private LocalDate expiryDateOverTenThousandPay(PayData payData, int addedMonths) {
+        int addedYears= addedMonths /10;
+        int addedMonthExceptYear = addedMonths %10;
+        return payData.getPayDate().plusYears(addedYears).plusMonths(addedMonthExceptYear);
     }
 
     private LocalDate expiryDateUsingFirstPayDate(PayData payData, int addedMonths) {
